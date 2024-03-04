@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shopping Cart</title>
+<style>
+  .item {
+    margin-bottom: 10px;
+  }
+  .like-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 24px; /* Adjust the font size to enlarge the heart button */
+    width: 40px; /* Set width */
+    height: 40px; /* Set height */
+    line-height: 1; /* Ensure proper alignment */
+  }
+  .liked {
+    color: red;
+  }
+</style>
+</head>
+<body>
+  <div id="cart">
+    <!-- Items will be dynamically added here -->
+  </div>
+  <script>
+    // Sample items in the cart
+    const itemsInCart = [
+      { id: 1, name: 'Product 1', price: 10, quantity: 1, liked: false },
+      { id: 2, name: 'Product 2', price: 20, quantity: 2, liked: false },
+      { id: 3, name: 'Product 3', price: 30, quantity: 1, liked: false }
+    ];
+
+    // Function to render items in the cart
+    function renderCart() {
+      const cartElement = document.getElementById('cart');
+      cartElement.innerHTML = '';
+
+      itemsInCart.forEach(item => {
+        const itemElement = document.createElement('div');
+        itemElement.classList.add('item');
+
+        // Name, price, quantity, and controls
+        itemElement.innerHTML = `
+          <span>${item.name} - $${item.price}</span>
+          <button onclick="decreaseQuantity(${item.id})">-</button>
+          <span>${item.quantity}</span>
+          <button onclick="increaseQuantity(${item.id})">+</button>
+          <button onclick="deleteItem(${item.id})">Delete</button>
+          <button class="like-button ${item.liked ? 'liked' : ''}" onclick="toggleLike(${item.id})">&hearts;</button>
+        `;
+
+        cartElement.appendChild(itemElement);
+      });
+
+      // Calculate and display total price
+      const totalPrice = itemsInCart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+      cartElement.innerHTML += `<div>Total Price: $${totalPrice}</div>`;
+    }
+
+    // Function to decrease quantity
+    function decreaseQuantity(itemId) {
+      const item = itemsInCart.find(item => item.id === itemId);
+      if (item && item.quantity > 0) {
+        item.quantity--;
+        renderCart();
+      }
+    }
+
+    // Function to increase quantity
+    function increaseQuantity(itemId) {
+      const item = itemsInCart.find(item => item.id === itemId);
+      if (item) {
+        item.quantity++;
+        renderCart();
+      }
+    }
+
+    // Function to delete an item
+    function deleteItem(itemId) {
+      const index = itemsInCart.findIndex(item => item.id === itemId);
+      if (index !== -1) {
+        itemsInCart.splice(index, 1);
+        renderCart();
+      }
+    }
+
+    // Function to toggle like status
+    function toggleLike(itemId) {
+      const item = itemsInCart.find(item => item.id === itemId);
+      if (item) {
+        item.liked = !item.liked;
+        renderCart();
+      }
+    }
+
+    // Initial render
+    renderCart();
+  </script>
+</body>
+</html>
+
+
